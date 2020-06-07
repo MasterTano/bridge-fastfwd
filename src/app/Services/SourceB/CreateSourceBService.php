@@ -6,11 +6,11 @@ use App\SourceB;
 
 class CreateSourceBService
 {
-    public function create($data) {
+    public function create(SourceBDto $data) {
         return SourceB::create([
-            'id' => $data['ACCOUNTID'],
-            'name' => $data['Account Name'],
-            'details' => json_encode($data)
+            'id' => $data->id,
+            'name' => $data->name,
+            'details' => json_encode($data->details)
         ]);
     }
 }

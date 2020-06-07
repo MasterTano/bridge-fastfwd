@@ -14,12 +14,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    $matchedCustomer = (new GetMatchedCustomer())->get();
-
-    // get data with duplicates and pass to view
-    // $unmatchedCustomer =
-
-    return view('home', compact('matchedCustomer'));
-});
+Route::get('/', 'HomeController@index');
 

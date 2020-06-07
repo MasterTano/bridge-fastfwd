@@ -10,6 +10,6 @@ class GetMatchedCustomer
 {
     public function get()
     {
-        return Customer::active()->get();
+        return Customer::with('sourceA')->active()->get();
     }
 }

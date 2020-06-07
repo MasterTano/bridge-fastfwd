@@ -1,13 +1,23 @@
 <?php
 
+use Illuminate\Support\Facades\Log;
+
 class SourceAData
 {
     static function get():array {
-        $dataSourceXml = simplexml_load_string(self::data());
+        try {
+            $dataSourceXml = simplexml_load_string(self::data());
 
-        $tempDataArray =  json_decode(json_encode($dataSourceXml), true);
-        // TODO: Add safety check
-        return $tempDataArray['Contacts']['Contact'];
+            $tempDataArray =  json_decode(json_encode($dataSourceXml), true);
+
+            return $tempDataArray['Contacts']['Contact'];
+
+        } catch (Throwable $exception) {
+
+            Log::error("Invalid SourceA Data format");
+
+            return [];
+        }
     }
 
     static function data() {
@@ -1456,6 +1466,42 @@ class SourceAData
                   <ContactID>94cb6d7b-5291-49f3-a0bc-fc0c01e68575</ContactID>
                   <ContactStatus>ACTIVE</ContactStatus>
                   <Name>Marine Systems</Name>
+                  <Addresses>
+                    <Address>
+                      <AddressType>POBOX</AddressType>
+                      <AddressLine1>145 Longdale Way</AddressLine1>
+                      <City>Coppertown</City>
+                      <PostalCode>CP89 TN8</PostalCode>
+                      <AttentionTo>Accounts Dept</AttentionTo>
+                    </Address>
+                    <Address>
+                      <AddressType>STREET</AddressType>
+                    </Address>
+                  </Addresses>
+                  <Phones>
+                    <Phone>
+                      <PhoneType>MOBILE</PhoneType>
+                    </Phone>
+                    <Phone>
+                      <PhoneType>DEFAULT</PhoneType>
+                      <PhoneNumber>9786456</PhoneNumber>
+                      <PhoneAreaCode>02</PhoneAreaCode>
+                    </Phone>
+                    <Phone>
+                      <PhoneType>DDI</PhoneType>
+                    </Phone>
+                    <Phone>
+                      <PhoneType>FAX</PhoneType>
+                    </Phone>
+                  </Phones>
+                  <UpdatedDateUTC>2011-04-22T03:37:20.29</UpdatedDateUTC>
+                  <IsSupplier>false</IsSupplier>
+                  <IsCustomer>true</IsCustomer>
+                </Contact>
+                <Contact>
+                  <ContactID>94cb6d7b-5291-49f3-a0bc-fc0c01e68576</ContactID>
+                  <ContactStatus>ACTIVE</ContactStatus>
+                  <Name>Test Company</Name>
                   <Addresses>
                     <Address>
                       <AddressType>POBOX</AddressType>

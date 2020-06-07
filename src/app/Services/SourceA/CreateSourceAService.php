@@ -6,11 +6,11 @@ use App\SourceA;
 
 class CreateSourceAService
 {
-    public function create($data) {
+    public function create(SourceADto $data) {
         return SourceA::create([
-            'id' => $data['ContactID'],
-            'name' => $data['Name'],
-            'details' => json_encode($data)
+            'id' => $data->id,
+            'name' => $data->name,
+            'details' => json_encode($data->details)
         ]);
     }
 }

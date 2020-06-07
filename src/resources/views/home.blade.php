@@ -2,9 +2,9 @@
 
 @section('content')
     <div class="container">
-        <x-matched-table :data="$matchedCustomer"></x-matched-table>
+        <matched-table :customers="{{ $matchedCustomer }}"></matched-table>
 
-        <x-unmatched-table></x-unmatched-table>
+        <un-matched-table :customers="{{ $unMatchedCustomer }}"></un-matched-table>
     </div>
 @endsection('content')
 

@@ -3,7 +3,9 @@
 use App\Customer;
 use App\Services\Customer\CreateCustomerService;
 use App\Services\SourceA\CreateSourceAService;
+use App\Services\SourceA\SourceADtoCollection;
 use App\Services\SourceB\CreateSourceBService;
+use App\Services\SourceB\SourceBDtoCollection;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -20,37 +22,20 @@ class DatabaseSeeder extends Seeder
         }
 
         // Create sourceB Data
-        $sourceBData = SourceBData::get();
-        foreach ($sourceBData as $contact) {
-            $contactCollection = collect($contact['FL']);
-            $normalizedContactArray = $contactCollection->mapWithKeys(function ($item) {
-                return [$item['val'] => $item['content']];
-            });
-            (new CreateSourceBService())->create($normalizedContactArray);
+        $sourceBDtoCollection = SourceBDtoCollection::create(SourceBData::get());
+        foreach ($sourceBDtoCollection as $sourceBDtoData) {
+            (new CreateSourceBService())->create($sourceBDtoData);
         }
 
-        $sourceAData = SourceAData::get();
-        foreach ($sourceAData as $sourceAcontact) {
+        $sourceADtoCollection = SourceADtoCollection::create(SourceAData::get());
+        foreach ($sourceADtoCollection as $sourceADtoData) {
             // Create sourceA Data
-            (new CreateSourceAService())->create($sourceAcontact);
+            (new CreateSourceAService())->create($sourceADtoData);
 
-            foreach ($sourceBData as $sourceBcontact) {
-
-                $contactCollection = collect($sourceBcontact['FL']);
-
-                $sourceBContactArray = $contactCollection->mapWithKeys(function ($item) {
-                    return [$item['val'] => $item['content']];
-                });
-
-                if($sourceBContactArray['Account Name'] === $sourceAcontact['Name']) {
-                    (new CreateCustomerService())->create([
-                        'idSourceA' => $sourceAcontact['ContactID'],
-                        'idSourceB' => $sourceBContactArray['ACCOUNTID'],
-                        'modifiedSourceA' => $sourceAcontact['UpdatedDateUTC'],
-                        'modifiedSourceA' => $sourceBContactArray['Modified Time'],
-                        'modified' => $sourceBContactArray['Modified Time'], //TODO: get the latest date modified for the duplicates
-                        'active' => 1,
-                    ]);
+            foreach ($sourceBDtoCollection as $sourceBDtoData) {
+                // Create customer entry for matched data
+                if($sourceADtoData->name === $sourceBDtoData->name) {
+                    (new CreateCustomerService())->create($sourceADtoData, $sourceBDtoData);
                 }
             }
         }

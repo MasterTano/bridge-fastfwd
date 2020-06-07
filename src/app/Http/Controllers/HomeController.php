@@ -2,20 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Services\Customer\GetDuplicatedCustomerService;
+use App\Services\Customer\GetMatchedCustomer;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     /**
      * Show the application dashboard.
      *
@@ -23,6 +14,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $matchedCustomer = (new GetMatchedCustomer())->get();
+
+        // get data with duplicates and pass to view
+        $unMatchedCustomer = (new GetDuplicatedCustomerService())->get();
+
+        return view('home', compact('matchedCustomer', 'unMatchedCustomer'));
     }
 }
